@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.84.0">
+    <title>Blog</title>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/blog/">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>-->
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap core CSS -->
+<!--    <link href="/docs/5.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">-->
+
+
+
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+    <script>
+        function mainPagerun(){
+            window.location.href = "/new";
+        }
+        function postPagerun(){
+            window.location.href = "/new/postdetail";
+        }
+        function loginPagerun(){
+            window.location.href = "/new/login";
+        }
+        function writePagerun(){
+            window.location.href = "/new/postwrite";
+        }
+        function signupPagerun(){
+            window.location.href = "/new/signup";
+        }
+        $(document).ready(function () {
+            // HTML 문서를 로드할 때마다 실행합니다.-->
+            getMessages();
+        })
+
+        function getMessages(){
+
+            $('#table_main').empty();
+
+            $.ajax({
+                type:'GET',
+                url:'/api/postlist?pageNo=0&pageSize=10',
+                success:function(response){
+                    for(let i = 0; i<response.content.length; i++){
+                        let post = response.content[i];
+                        let id = post.id;
+                        let title = post.title;
+                        let nickname = post.nickname;
+                        let contents = post.contents;
+                        let createdAt = post.createdAt;
+                        addHTML(id,title,nickname,contents,createdAt);
+                    }
+                }
+            })
+        }
+
+        function addHTML(id,title,nickname,contents,createdAt){
+            let tempHtml = `<tr>
+                                <td>${id}</td>
+                                <td>${nickname}</td>
+                                <td> <a href="/new/postdetail/${id}">${title}</a></td>
+                                <td style="font-size: 12px;">${createdAt}</td>
+                            </tr>`;
+            $('#table_main').append(tempHtml);
+        }
+function getMessages2(num){
+
+            $('#table_main').empty();
+
+            $.ajax({
+                type:'GET',
+                url:`/api/postlist?pageNo=${num}&pageSize=10`,
+                success:function(response){
+                    for(let i = 0; i<response.content.length; i++){
+                        let post = response.content[i];
+                        let id = post.id;
+                        let title = post.title;
+                        let nickname = post.nickname;
+                        let contents = post.contents;
+                        let createdAt = post.createdAt;
+                        addHTML(id,title,nickname,contents,createdAt);
+                    }
+                }
+            })
+        }
+    </script>
+
+</head>
+<body>
+
+<div class="container">
+
+    <header class="p-3 bg-dark text-white" style="margin-bottom:30px">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/new" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"></svg>
+                </a>
+
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="/new" class="nav-link px-2 text-secondary">Home</a></li>
+                    <li><a href="/new/postwrite" class="nav-link px-2 text-white">write</a></li>
+                    <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
+                    <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
+                    <li><a href="#" class="nav-link px-2 text-white">About</a></li>
+                </ul>
+
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" method="GET" action="/api/postlist?pageNo=0&pageSize=10&search">
+                    <select name="category" class="form-select form-select-sm" aria-label=".form-select-sm example">
+                        <option selected>검색 유형</option>
+                        <option value="title">제목</option>
+                        <option value="name">이름</option>
+                    </select>
+                    <input type="search" class="form-control form-control-dark"  name="keyword" placeholder="Search..." aria-label="Search">
+                </form>
+
+                <div class="text-end">
+                    <button type="button" class="btn btn-outline-light me-2" onclick="loginPagerun()">Login</button>
+                    <button type="button" class="btn btn-warning" onclick="signupPagerun()">Sign-up</button>
+                </div>
+            </div>
+        </div>
+    </header>
+</div>
+
+<main class="container">
+    <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+        <div class="col-md-6 px-0">
+            <h1 class="display-4 fst-italic" style="font-family: 'Playfair Display', serif;">My Blog</h1>
+            <p class="lead my-3">My Blog 에 오신것을 환영합니다.</p>
+            <p class="lead mb-0"><a href="#" class="text-white fw-bold">Continue reading...</a></p>
+        </div>
+    </div>
+
+
+
+    <div class="row g-5">
+        <div class="col-md-8">
+            <h3 class="pb-4 mb-4 fst-italic border-bottom">
+                글목록
+            </h3>
+            <article class="blog-post">
+
+                <h3>Example table</h3>
+                <p>And don't forget about tables in these posts:</p>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th width="50px">id</th>
+                        <th width="100px">글쓴이</th>
+                        <th>제목</th>
+                        <th width="100px">게시날짜</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table_main">
+                    <tr>
+                        <td>1</td>
+                        <td>Alice</td>
+                        <td> <a href="/postdetail/${id}">10</a></td>
+                        <td>11</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Bob</td>
+                        <td>4</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Charlie</td>
+                        <td>9</td>
+                        <td>9</td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+                <p>This is some additional paragraph placeholder content. It's a slightly shorter version of the other highly repetitive body text used throughout.</p>
+            </article>
+
+            <!--     네비 바    -->
+            <nav aria-label="Page navigation" style="margin-left:270px;">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" onclick="getMessages()">1</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" onclick="getMessages2(1)">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+
+        <div class="col-md-4">
+            <div class="position-sticky" style="top: 2rem;">
+                <div class="p-4 mb-3 bg-light rounded">
+                    <h4 class="fst-italic">About</h4>
+                    <p class="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
+                </div>
+
+                <div class="p-4">
+                    <h4 class="fst-italic">Archives</h4>
+                    <ol class="list-unstyled mb-0">
+                        <li><a href="#">March 2021</a></li>
+                        <li><a href="#">February 2021</a></li>
+                        <li><a href="#">January 2021</a></li>
+                        <li><a href="#">December 2020</a></li>
+                        <li><a href="#">November 2020</a></li>
+                        <li><a href="#">October 2020</a></li>
+                        <li><a href="#">September 2020</a></li>
+                        <li><a href="#">August 2020</a></li>
+                        <li><a href="#">July 2020</a></li>
+                        <li><a href="#">June 2020</a></li>
+                        <li><a href="#">May 2020</a></li>
+                        <li><a href="#">April 2020</a></li>
+                    </ol>
+                </div>
+
+                <div class="p-4">
+                    <h4 class="fst-italic">Elsewhere</h4>
+                    <ol class="list-unstyled">
+                        <li><a href="#">GitHub</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Facebook</a></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<div class="container">
+    <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+        </ul>
+        <p class="text-center text-muted">&copy; 2021 Company, Inc</p>
+    </footer>
+</div>
+
+
+
+
+</body>
+</html>
